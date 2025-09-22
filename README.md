@@ -1,93 +1,115 @@
-Deploy de APIs no Azure com Azure Functions
 
-Este guia mostra como criar, configurar e publicar uma API no Azure usando Azure Functions.
+# Deploy de APIs no Azure com Azure Functions
 
-Pré-requisitos
+Este guia mostra como criar, configurar e publicar uma API no Azure usando **Azure Functions**.
 
-Conta no Azure
+## Pré-requisitos
 
-Azure CLI
+-   Conta no Azure
+    
+-   Azure CLI
+    
+-   [Python 3.9+](https://www.python.org/downloads/)
+    
+-   Azure Functions Core Tools
+    
 
-Python 3.9+
+----------
 
-Azure Functions Core Tools
+## Passo 1: Criar um Function App local
 
-Passo 1: Criar um Function App local
+1.  Abra o terminal.
+    
+2.  Crie uma pasta para o projeto e acesse-a:
+    
 
-Abra o terminal.
+`mkdir minha_api && cd minha_api` 
 
-Crie uma pasta para o projeto e acesse-a:
+3.  Inicialize o projeto Azure Functions com Python:
+    
 
-mkdir minha_api && cd minha_api
+`func init . --python` 
 
+4.  Crie uma nova função HTTP Trigger:
+    
 
-Inicialize o projeto Azure Functions com Python:
+`func new --name minha_funcao --template "HTTP trigger"` 
 
-func init . --python
+----------
 
+## Passo 2: Adicionar código da API
 
-Crie uma nova função HTTP Trigger:
+-   Substitua o conteúdo de `__init__.py` dentro da função pelo código da sua API.
+    
+-   Adicione dependências no `requirements.txt` se necessário.
+    
 
-func new --name minha_funcao --template "HTTP trigger"
+----------
 
-Passo 2: Adicionar código da API
+## Passo 3: Testar localmente
 
-Substitua o conteúdo de __init__.py dentro da função pelo código da sua API.
+`func start` 
 
-Adicione dependências no requirements.txt se necessário.
+-   A função será executada em `http://localhost:7071/api/minha_funcao`.
+    
+-   Teste enviando requisições GET ou POST usando `curl` ou Postman.
+    
 
-Passo 3: Testar localmente
-func start
+----------
 
+## Passo 4: Criar Function App no Azure
 
-A função será executada em http://localhost:7071/api/minha_funcao.
+1.  Logue na Azure CLI:
+    
 
-Teste enviando requisições GET ou POST usando curl ou Postman.
+`az login` 
 
-Passo 4: Criar Function App no Azure
+2.  Crie um **Resource Group**:
+    
 
-Logue na Azure CLI:
+`az group create --name meu_rg --location eastus` 
 
-az login
+3.  Crie o Function App:
+    
 
-
-Crie um Resource Group:
-
-az group create --name meu_rg --location eastus
-
-
-Crie o Function App:
-
-az functionapp create \
+`az functionapp create \
     --resource-group meu_rg \
     --consumption-plan-location eastus \
     --runtime python \
     --runtime-version 3.9 \
     --functions-version 4 \
     --name nome_unico_da_funcao \
-    --storage-account nomeunicoazure
+    --storage-account nomeunicoazure` 
 
-Passo 5: Publicar a função no Azure
+----------
+
+## Passo 5: Publicar a função no Azure
 
 No diretório do projeto:
 
-func azure functionapp publish nome_unico_da_funcao
+`func azure functionapp publish nome_unico_da_funcao` 
 
+-   Após o deploy, sua API estará disponível em:
+    
 
-Após o deploy, sua API estará disponível em:
+`https://nome_unico_da_funcao.azurewebsites.net/api/minha_funcao` 
 
-https://nome_unico_da_funcao.azurewebsites.net/api/minha_funcao
+----------
 
-Passo 6: Testar a API no Azure
+## Passo 6: Testar a API no Azure
 
-Use curl, Postman ou qualquer cliente HTTP para acessar a URL publicada.
+-   Use `curl`, Postman ou qualquer cliente HTTP para acessar a URL publicada.
+    
+-   Envie requisições GET ou POST conforme definido na sua função.
+    
 
-Envie requisições GET ou POST conforme definido na sua função.
+----------
 
-Passo 7: Atualizações
+## Passo 7: Atualizações
 
-Modifique o código localmente.
+-   Modifique o código localmente.
+    
+-   Publique novamente com:
+    
 
-Publique novamente com:
-
-func azure functionapp publish nome_unico_da_funcao
+`func azure functionapp publish nome_unico_da_funcao`
